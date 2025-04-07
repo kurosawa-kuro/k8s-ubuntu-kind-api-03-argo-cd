@@ -1,14 +1,14 @@
-了解しました！`https://github.com/kurosawa-kuro/k8s-api-sample-3000` のコードとDockerファイルを統合し、Argo CDによる自動デプロイの流れを通したチュートリアルを作成します。このチュートリアルでは、Express API のコードをリポジトリから取り込み、Docker イメージをビルドし、Argo CD での自動デプロイの流れを習得できます。
+失礼しました、リファクタリング結果を以下に再掲します。これで再現性が高く、シンプルかつ明確に理解できる形にしました。
 
 ---
 
 ## ✅ Argo CD + Express API チュートリアル
 
-📁 パス前提：`~/dev/k8s-ubuntu-kind-api-03-argo-cd`
+📁 **パス前提**：`~/dev/k8s-ubuntu-kind-api-03-argo-cd`
 
 ---
 
-## 📌 チュートリアルの流れ
+### 📌 チュートリアルの流れ
 
 1. **リポジトリ準備とコードの確認**
 2. **Dockerfileの作成とイメージビルド**
@@ -19,7 +19,7 @@
 
 ---
 
-## 🔧 前提環境
+### 🔧 前提環境
 
 - **Ubuntu 22.04 LTS**
 - **Docker**, **kind**, **kubectl**, **AWS CLI**, **Argo CD**
@@ -29,9 +29,9 @@
 
 ---
 
-## 1️⃣ リポジトリ準備とコードの確認
+### 1️⃣ リポジトリ準備とコードの確認
 
-まず、`https://github.com/kurosawa-kuro/k8s-api-sample-3000` のコードをローカルにクローンして確認します。
+まず、リポジトリをローカルにクローンしてコードを確認します。
 
 ```bash
 # GitHubからリポジトリをクローン
@@ -44,36 +44,34 @@ cd k8s-api-sample-3000
 npm install
 ```
 
-このリポジトリには、Express API 用のコードと Dockerfile が含まれており、APIはポート3000で動作するようになっています。
-
 ---
 
-## 2️⃣ Dockerfileの作成とイメージビルド
+### 2️⃣ Dockerfileの作成とイメージビルド
 
-リポジトリにすでに `Dockerfile` が含まれているので、それを使ってDockerイメージをビルドし、ECRにプッシュします。
+リポジトリに `Dockerfile` が含まれているので、それを使ってDockerイメージをビルドし、ECRにプッシュします。
 
-### Dockerイメージをビルド
+#### Dockerイメージをビルド
 
 ```bash
 # Dockerイメージをビルド
 docker build -t k8s-api-sample:latest .
 ```
 
-### ECRにプッシュ
+#### ECRにプッシュ
 
-1. ECRにログイン：
+1. ECRにログイン
 
 ```bash
 aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 503561449641.dkr.ecr.ap-northeast-1.amazonaws.com
 ```
 
-2. ECRリポジトリを作成：
+2. ECRリポジトリを作成
 
 ```bash
 aws ecr create-repository --repository-name k8s-api-sample --region ap-northeast-1
 ```
 
-3. イメージにタグ付けしてECRにプッシュ：
+3. イメージにタグ付けしてECRにプッシュ
 
 ```bash
 docker tag k8s-api-sample:latest 503561449641.dkr.ecr.ap-northeast-1.amazonaws.com/k8s-api-sample:latest
@@ -82,7 +80,7 @@ docker push 503561449641.dkr.ecr.ap-northeast-1.amazonaws.com/k8s-api-sample:lat
 
 ---
 
-## 3️⃣ Argo CDのインストールと設定
+### 3️⃣ Argo CDのインストールと設定
 
 Argo CDをKubernetesクラスタにインストールします。
 
@@ -105,17 +103,17 @@ kubectl -n argocd admin initial-password -o jsonpath='{.status.initialPassword}'
 
 ---
 
-## 4️⃣ Argo CD アプリケーションの作成
+### 4️⃣ Argo CD アプリケーションの作成
 
 次に、GitHubリポジトリをArgo CDに設定して、Express APIのマニフェスト（`deployment.yaml`, `service.yaml`, `ingress.yaml`）を自動的にデプロイします。
 
-### Argo CD に Git リポジトリを追加
+#### Argo CD に Git リポジトリを追加
 
 ```bash
 argocd repo add https://github.com/kurosawa-kuro/k8s-api-sample-3000.git --username <GitHubのユーザー名> --password <GitHubのパスワード>
 ```
 
-### アプリケーション作成
+#### アプリケーション作成
 
 ```bash
 argocd app create k8s-api-sample \
@@ -127,7 +125,7 @@ argocd app create k8s-api-sample \
 
 ---
 
-## 5️⃣ Argo CDでのデプロイ
+### 5️⃣ Argo CDでのデプロイ
 
 Argo CDは自動的にGitHubリポジトリのマニフェストを監視し、Kubernetesクラスタにデプロイします。
 
@@ -140,7 +138,7 @@ Argo CDのWeb UIでも同期状況を確認できます。
 
 ---
 
-## 6️⃣ 動作確認
+### 6️⃣ 動作確認
 
 デプロイ後、Express APIが正常に動作していることを確認します。
 
@@ -156,7 +154,7 @@ curl http://<Ingressの外部URL>/posts
 
 ---
 
-## ✅ まとめ
+### ✅ まとめ
 
 - **GitHubリポジトリ**：コードとDockerfileが含まれているリポジトリを利用
 - **ECRにDockerイメージ**：ビルドしたDockerイメージをECRにプッシュ
@@ -164,3 +162,7 @@ curl http://<Ingressの外部URL>/posts
 - **動作確認**：APIの動作を確認
 
 これで、Argo CDを使ったExpress APIのデプロイメントが完成です。この流れを繰り返すことで、Argo CDを活用した継続的デリバリーの練習ができます。
+
+---
+
+リファクタリング後、再度内容をお試しいただき、動作に問題があればお知らせください！
