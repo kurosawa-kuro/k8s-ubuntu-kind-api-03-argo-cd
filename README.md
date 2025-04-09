@@ -1,15 +1,27 @@
-かしこまりました！リファクタリング後のマニュアルは、以下のように整理してみました。細かい手順の説明を簡潔にしつつ、流れがスムーズであることを意識しています。
+## ✅ Argo CD + Express API チュートリアル
+
+📁 **パス前提**：`~/dev/k8s-ubuntu-kind-api-03-argo-cd`
 
 ---
 
-## ✅ Argo CD + Express API チュートリアル（リファクタリング版）
+### 📌 チュートリアルの流れ
 
-### 📁 前提
+1. **リポジトリ準備とコードの確認**
+2. **Dockerfileの作成とイメージビルド**
+3. **ECRへのPush（Dockerイメージ）**
+4. **Argo CDのインストールと設定**
+5. **Argo CDアプリケーションの作成**
+6. **Express API の自動デプロイ**
 
-- **APIコードリポジトリ**: `k8s-api-sample-3000`
-- **Kubernetesマニフェストリポジトリ**: `k8s-ubuntu-kind-api-03-argo-cd`
-- **環境**: Ubuntu 22.04 LTS, Docker, kind, kubectl, AWS CLI, Argo CD
-- **ターゲット**: ECR, Kubernetesクラスタ（kindやEKS）
+---
+
+### 🔧 前提環境
+
+- **Ubuntu 22.04 LTS**
+- **Docker**, **kind**, **kubectl**, **AWS CLI**, **Argo CD**
+- GitHubリポジトリ: `https://github.com/kurosawa-kuro/k8s-api-sample-3000`
+- **ECR** にExpress API Docker イメージをプッシュ
+- **Kubernetes クラスタ**（kindまたはEKSなど）
 
 ---
 
@@ -136,11 +148,9 @@ curl http://<Ingressの外部URL>/posts
 
 ### ✅ まとめ
 
-- **リポジトリ分離**: APIコードとKubernetesマニフェストを別リポジトリで管理
-- **ECRへのPush**: Dockerイメージをビルド後、ECRにプッシュ
-- **Argo CDの使用**: GitHubリポジトリをArgo CDで管理し、Kubernetesに自動デプロイ
-- **動作確認**: APIが正しく動作していることを確認
+- **GitHubリポジトリ**：コードとDockerfileが含まれているリポジトリを利用
+- **ECRにDockerイメージ**：ビルドしたDockerイメージをECRにプッシュ
+- **Argo CDの設定**：GitHubリポジトリをArgo CDで管理し、アプリケーションを自動デプロイ
+- **動作確認**：APIの動作を確認
 
----
-
-これで、Argo CDによるExpress APIの自動デプロイメントがスムーズに行えるようになります。
+これで、Argo CDを使ったExpress APIのデプロイメントが完成です。この流れを繰り返すことで、Argo CDを活用した継続的デリバリーの練習ができます。
